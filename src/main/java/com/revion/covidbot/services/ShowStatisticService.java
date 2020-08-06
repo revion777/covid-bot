@@ -98,7 +98,7 @@ public class ShowStatisticService {
         }
     }
 
-    private synchronized SendMessage getMessageStatistic() {
+    private SendMessage getMessageStatistic() {
         SendMessage sendMessage = null;
 
         if (savedUser != null) {
