@@ -27,6 +27,7 @@ public class UserService {
     private final ReplyMessagesService messagesService;
     private final MainMenuService mainMenuService;
 
+    private User user;
     private long chatId;
 
     public UserService(UserRepo userRepo,
@@ -45,28 +46,31 @@ public class UserService {
     }
 
     public UserEntity initUserSaving(Message inputMsg) {
-        User user = inputMsg.getFrom();
+        user = inputMsg.getFrom();
         chatId = inputMsg.getChatId();
 
         Optional<UserEntity> savedUser = findById(user.getId());
         if (savedUser.isEmpty()) {
-            UserEntity newUser = UserEntity.builder()
-                    .id(Long.valueOf(user.getId()))
-                    .chatId(inputMsg.getChatId())
-                    .firstName(user.getFirstName())
-                    .lastName(user.getLastName())
-                    .userName(user.getUserName())
-                    .isBot(user.getBot())
-                    .languageCode(user.getLanguageCode())
-                    .tsCreate(new Date())
-                    .regions(new HashSet<>())
-                    .build();
-
+            UserEntity newUser = getNewUserEntity();
             return saveUser(newUser);
         } else {
             log.info(LogMessage.USER_ALREADY_SAVED, savedUser);
             return savedUser.get();
         }
+    }
+
+    private UserEntity getNewUserEntity() {
+        return UserEntity.builder()
+                .id(Long.valueOf(user.getId()))
+                .chatId(chatId)
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .userName(user.getUserName())
+                .isBot(user.getBot())
+                .languageCode(user.getLanguageCode())
+                .tsCreate(new Date())
+                .regions(new HashSet<>())
+                .build();
     }
 
     @Transactional(readOnly = true)

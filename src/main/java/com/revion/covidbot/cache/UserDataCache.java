@@ -1,16 +1,18 @@
 package com.revion.covidbot.cache;
 
 import com.revion.covidbot.objects.BotState;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Maxim Negodyuk created on 24.07.2020
  * @project covid19-statistic-bot
  */
-@Service
+@Component
 public class UserDataCache {
+
     private final Map<Long, BotState> usersBotStates = new HashMap<>();
 
     public void setUserCurrentBotState(long userId, BotState botState) {

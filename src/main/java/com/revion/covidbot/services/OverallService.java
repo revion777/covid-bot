@@ -22,20 +22,6 @@ public class OverallService {
         this.overallRepo = overallRepo;
     }
 
-    @Transactional(readOnly = true)
-    public OverallEntity findOverall() {
-        return overallRepo.findAll()
-                .stream()
-                .findFirst()
-                .orElse(null);
-    }
-
-    @Transactional
-    public void save(OverallEntity overall) {
-        log.info(LogMessage.OVERALL_INFO_SUCCESSFULLY_SAVED);
-        overallRepo.save(overall);
-    }
-
     public StringBuilder getOverallInfo(OverallEntity overall) {
         return new StringBuilder()
                 .append(overall.getTitle())
@@ -51,5 +37,16 @@ public class OverallService {
                 .append("\n_Всего умерших_: ")
                 .append(CommonUtils.getDecimalFormatter().format(overall.getDied()))
                 .append("\n\n");
+    }
+
+    @Transactional(readOnly = true)
+    public OverallEntity findOverall() {
+        return overallRepo.findAll().stream().findFirst().orElse(null);
+    }
+
+    @Transactional
+    public void save(OverallEntity overall) {
+        log.info(LogMessage.OVERALL_INFO_SUCCESSFULLY_SAVED);
+        overallRepo.save(overall);
     }
 }

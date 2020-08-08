@@ -17,16 +17,16 @@ public class ReplyMessagesService {
         this.localeMessageService = messageService;
     }
 
+    public SendMessage getReplyMessage(long chatId, String replyMessage, Object... args) {
+        return new SendMessage(chatId, localeMessageService.getMessage(replyMessage, args));
+    }
+
     public SendMessage getInfoReplyMessage(long chatId, String replyMessage) {
         return new SendMessage(chatId, getEmojiReplyText(replyMessage, Emojis.INFO));
     }
 
     public SendMessage getSuccessReplyMessage(long chatId, String replyMessage) {
         return new SendMessage(chatId, getEmojiReplyText(replyMessage, Emojis.SUCCESS_MARK));
-    }
-
-    public SendMessage getWarningReplyMessage(long chatId, String replyMessage) {
-        return new SendMessage(chatId, getEmojiReplyText(replyMessage, Emojis.NOTIFICATION_MARK_FAILED));
     }
 
     public SendMessage getErrorReplyMessage(long chatId, String replyMessage) {

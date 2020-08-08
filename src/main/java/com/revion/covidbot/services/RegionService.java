@@ -3,11 +3,12 @@ package com.revion.covidbot.services;
 import com.revion.covidbot.cache.UserDataCache;
 import com.revion.covidbot.entities.RegionEntity;
 import com.revion.covidbot.entities.UserEntity;
+import com.revion.covidbot.objects.BotCommand;
 import com.revion.covidbot.objects.BotState;
-import com.revion.covidbot.objects.RegionEnum;
 import com.revion.covidbot.objects.logging.LogMessage;
 import com.revion.covidbot.repositories.RegionRepo;
 import com.revion.covidbot.utils.CommonUtils;
+import com.revion.covidbot.utils.Emojis;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,8 +17,8 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.User;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Maxim Negodyuk created on 24.07.2020
@@ -70,36 +71,25 @@ public class RegionService {
         String userInputText = inputMsg.getText();
         SendMessage replyToUser;
 
-        List<RegionEnum> regionEnumList = findRegionEnumByCodeOrTitle(userInputText);
-
-        if (regionEnumList.size() == 1) {
-            RegionEntity region = findRegionByTitle(regionEnumList.get(0).getTitle());
+        List<RegionEntity> region = findRegionByTitle(userInputText);
+        if (region.size() == 1) {
 
             Optional<UserEntity> savedUser = userService.findById(inputUser.getId());
             if (savedUser.isPresent()) {
-                return generateReplyToUser(savedUser.get(), region);
+                return generateReplyToUser(savedUser.get(), region.get(0));
             } else {
                 log.info(LogMessage.USER_NOT_FOUND, inputUser.getFirstName());
 
                 UserEntity newUser = userService.initUserSaving(inputMsg);
-                return generateReplyToUser(newUser, region);
+                return generateReplyToUser(newUser, region.get(0));
             }
         } else {
-            replyToUser = messagesService.getWarningReplyMessage(chatId, "reply.region.invalidInput");
+            replyToUser = messagesService.getReplyMessage(chatId, "reply.region.invalidInput",
+                    Emojis.NOTIFICATION_MARK_FAILED, BotCommand.SHOW_REGIONS);
             log.info(LogMessage.REGION_INVALID_INPUT, inputUser.getFirstName(), userInputText);
         }
 
         return replyToUser;
-    }
-
-    private List<RegionEnum> findRegionEnumByCodeOrTitle(String inputMsg) {
-        if (inputMsg == null)
-            return Collections.emptyList();
-
-        return Arrays.stream(RegionEnum.values())
-                .filter(region -> region.getCode().contains(inputMsg) ||
-                        region.getTitle().toLowerCase().contains(inputMsg.toLowerCase()))
-                .collect(Collectors.toList());
     }
 
     private SendMessage generateReplyToUser(UserEntity user, RegionEntity region) {
@@ -141,22 +131,6 @@ public class RegionService {
         saveAllRegions(newRegionList);
     }
 
-    @Transactional(readOnly = true)
-    public List<RegionEntity> findAllRegions() {
-        return regionRepo.findAll();
-    }
-
-    @Transactional(readOnly = true)
-    public RegionEntity findRegionByTitle(String title) {
-        return regionRepo.findByTitle(title).orElse(null);
-    }
-
-    @Transactional
-    public void saveAllRegions(List<RegionEntity> regions) {
-        regionRepo.saveAll(regions);
-        log.info(LogMessage.REGIONS_SUCCESSFULLY_SAVED);
-    }
-
     public void fillReplyTextByRegionInfo(StringBuilder replyText, RegionEntity region) {
         replyText
                 .append("*")
@@ -173,6 +147,22 @@ public class RegionService {
                 .append("\n_Всего умерших_: ")
                 .append(CommonUtils.getDecimalFormatter().format(region.getDied()))
                 .append("\n\n");
+    }
+
+    @Transactional(readOnly = true)
+    public List<RegionEntity> findAllRegions() {
+        return regionRepo.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public List<RegionEntity> findRegionByTitle(String title) {
+        return regionRepo.findByTitle(title);
+    }
+
+    @Transactional
+    public void saveAllRegions(List<RegionEntity> regions) {
+        regionRepo.saveAll(regions);
+        log.info(LogMessage.REGIONS_SUCCESSFULLY_SAVED);
     }
 }
 

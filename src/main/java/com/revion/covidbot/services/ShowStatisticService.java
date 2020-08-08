@@ -103,20 +103,21 @@ public class ShowStatisticService {
 
         if (savedUser != null) {
             regions = savedUser.getRegions();
+
             if (regions.isEmpty() && inputMsg != null) {
                 log.info(LogMessage.REGIONS_NOT_FOUND, savedUser.getFirstName());
-
                 sendMessage = generateMessageFromAddRegionHandler();
+
             } else if (!regions.isEmpty()) {
                 log.info(LogMessage.REGIONS_FOUND, savedUser.getFirstName());
-
                 sendMessage = createMessageStatistic();
+
             } else {
                 log.info(LogMessage.REGIONS_NOT_FOUND, savedUser.getFirstName());
             }
+
         } else if (inputMsg != null) {
             log.info(LogMessage.USER_NOT_FOUND, inputMsg.getFrom().getFirstName());
-
             sendMessage = generateMessageFromAddRegionHandler();
         }
 
