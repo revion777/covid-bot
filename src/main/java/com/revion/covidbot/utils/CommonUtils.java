@@ -2,9 +2,7 @@ package com.revion.covidbot.utils;
 
 import org.apache.logging.log4j.util.Strings;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
+import java.text.*;
 import java.util.Locale;
 
 /**
@@ -14,6 +12,8 @@ import java.util.Locale;
 public class CommonUtils {
 
     private static DecimalFormat formatter;
+
+    public final static DateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm:ss dd.MM.yyyy");
 
     public static Integer stringToNumber(Object value) {
         return Integer.parseInt(CommonUtils.safetyCleanWhiteSpaces(String.valueOf(value)));

@@ -1,6 +1,7 @@
 package com.revion.covidbot;
 
 import com.revion.covidbot.objects.logging.LogMessage;
+import com.revion.covidbot.utils.CommonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -8,7 +9,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.telegram.telegrambots.ApiContextInitializer;
 
 import javax.annotation.PostConstruct;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -27,7 +27,6 @@ public class CovidBotApplication {
 
 	@PostConstruct
 	public void testBot() {
-		String date = new SimpleDateFormat("hh:mm:ss dd.MM.yyyy").format(new Date());
-		log.info(LogMessage.APP_STARTS, date);
+		log.info(LogMessage.APP_STARTS, CommonUtils.DATE_FORMAT.format(new Date()));
 	}
 }

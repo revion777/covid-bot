@@ -1,6 +1,5 @@
 package com.revion.covidbot.schedulers;
 
-import com.revion.covidbot.objects.logging.LogMessage;
 import com.revion.covidbot.services.ExtractorService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -23,11 +22,7 @@ public class ExtractorScheduler {
     }
 
     @Scheduled(cron = ("${extractor.period}"))
-    public void startExtractorJob() {
-        log.info(LogMessage.SCHEDULER_START_EXTRACTOR);
-
+    public void startExtractorJob() throws Exception {
         extractorService.startExtractorService();
-
-        log.info(LogMessage.SCHEDULER_FINISH_EXTRACTOR);
     }
 }

@@ -4,12 +4,16 @@ package com.revion.covidbot.services;
 import com.revion.covidbot.cache.UserDataCache;
 import com.revion.covidbot.entities.RegionEntity;
 import com.revion.covidbot.objects.BotState;
+import com.revion.covidbot.objects.RegionEnum;
 import com.revion.covidbot.utils.BotUtils;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Contact;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * @author Maxim Negodyuk created on 24.07.2020
@@ -28,7 +32,7 @@ public class ShowAllNamesService {
     }
 
     public SendMessage handleInputMsg(Message message) {
-        StringBuilder replyText = new StringBuilder("*Наименования:*\n");
+        StringBuilder replyText = new StringBuilder("*Наименования субъектов РФ:*\n");
 
         regionService.findAllRegions()
                 .stream()

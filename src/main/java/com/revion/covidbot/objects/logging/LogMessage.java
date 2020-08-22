@@ -16,9 +16,9 @@ public class LogMessage {
     public static final String BOT_SEND_MSG_ERROR = "Произошла ошибка при передаче сообщения боту! Пользователь: {}, {}";
     public static final String BOT_HANDLE_INPUT_MSG_ERROR = "Произошла ошибка при обработке пользовательского сообщения!";
 
-    public static final String SCHEDULER_START_EXTRACTOR = "Планировщик ExtractorScheduler начал работу";
-    public static final String SCHEDULER_FINISH_EXTRACTOR = "Планировщик ExtractorScheduler закончил работу";
-    public static final String SCHEDULER_ERROR_EXTRACTOR = "Произошла ошибка во время работы планировщика ExtractorScheduler!";
+    public static final String SCHEDULER_START = "Начало работы планировщика для сервиса {}, время = {}";
+    public static final String SCHEDULER_FINISH = "Завершение работы планировщика для сервиса {}, время = {}";
+    public static final String SCHEDULER_ERROR = "Произошла ошибка во время работы планировщика для сервиса {}";
 
     public static final String OVERALL_INFO_SUCCESSFULLY_SAVED = "Шапка статистики успешно сохранена/обновлена";
 

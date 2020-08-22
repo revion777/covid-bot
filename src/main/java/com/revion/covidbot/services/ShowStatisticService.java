@@ -18,6 +18,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -134,7 +135,9 @@ public class ShowStatisticService {
 
         OverallEntity overall = overallService.findOverall();
         StringBuilder replyText = overallService.getOverallInfo(overall);
-        regions.forEach(region -> regionService.fillReplyTextByRegionInfo(replyText, region));
+        regions.stream()
+                .sorted(Comparator.comparing(RegionEntity::getTitle))
+                .forEach(region -> regionService.fillReplyTextByRegionInfo(replyText, region));
 
         return BotUtils.getMessage(chatId, replyText.toString());
     }

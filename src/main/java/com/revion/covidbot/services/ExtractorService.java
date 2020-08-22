@@ -4,7 +4,6 @@ import com.revion.covidbot.botapi.CovidBot;
 import com.revion.covidbot.entities.OverallEntity;
 import com.revion.covidbot.entities.RegionEntity;
 import com.revion.covidbot.objects.DocumentStaticPath;
-import com.revion.covidbot.objects.logging.LogMessage;
 import com.revion.covidbot.utils.CommonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
@@ -30,7 +29,7 @@ public class ExtractorService {
     private final CovidBot covidBot;
     private final OverallService overallService;
     private final RegionService regionService;
-    private  final  ShowStatisticService showStatisticService;
+    private final ShowStatisticService showStatisticService;
 
     public ExtractorService(CovidBot covidBot,
                             OverallService overallService,
@@ -41,20 +40,16 @@ public class ExtractorService {
         this.showStatisticService = showStatisticService;
     }
 
-    public void startExtractorService() {
-        try {
-            Document doc = Jsoup.connect(DocumentStaticPath.MAIN_URL).get();
+    public void startExtractorService() throws Exception {
+        Document doc = Jsoup.connect(DocumentStaticPath.MAIN_URL).get();
 
-            OverallEntity overall = getOverall(doc);
-            overallService.save(overall);
+        OverallEntity overall = getOverall(doc);
+        overallService.save(overall);
 
-            List<RegionEntity> regionList = getRegions(doc);
-            regionService.initSaving(regionList);
+        List<RegionEntity> regionList = getRegions(doc);
+        regionService.initSaving(regionList);
 
-            showStatisticService.sendMsgStatisticToAllUsers(covidBot);
-        } catch (Exception ex) {
-            log.error(LogMessage.SCHEDULER_ERROR_EXTRACTOR, ex);
-        }
+        showStatisticService.sendMsgStatisticToAllUsers(covidBot);
     }
 
     public OverallEntity getOverall(Document doc) {
