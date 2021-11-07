@@ -19,7 +19,7 @@
     <properties>
         <java.version>14</java.version>
         <telegram.bot.version>4.1.2</telegram.bot.version>
-        <jsoup.version>1.13.1</jsoup.version>
+        <jsoup.version>1.14.2</jsoup.version>
         <vdurmont.version>5.1.1</vdurmont.version>
         <hibernate.validator.version>6.1.5.Final</hibernate.validator.version>
     </properties>
