@@ -1,24 +1,25 @@
 package com.revion.covidbot.botapi;
 
-import lombok.Getter;
+import com.revion.covidbot.objects.logging.LogMessage;
+import lombok.EqualsAndHashCode;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.telegram.telegrambots.bots.DefaultBotOptions;
-import org.telegram.telegrambots.bots.TelegramWebhookBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updates.SetWebhook;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.starter.SpringWebhookBot;
 
 /**
  * @author Maxim Negodyuk created on 24.07.2020
- * @project covid19-statistic-bot
  */
-@Getter
+@EqualsAndHashCode(callSuper = true)
 @Setter
 @Slf4j
-public class CovidBot extends TelegramWebhookBot {
+public class CovidBot extends SpringWebhookBot {
 
     @Autowired
     private TelegramFacade telegramFacade;
@@ -27,20 +28,33 @@ public class CovidBot extends TelegramWebhookBot {
     private String botUsername;
     private String botToken;
 
-    public CovidBot() {
-        super();
-    }
-
-    public CovidBot(DefaultBotOptions botOptions) {
-        super(botOptions);
+    public CovidBot(SetWebhook setWebhook) {
+        super(setWebhook);
     }
 
     @Override
-    public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
+    public BotApiMethod<Message> onWebhookUpdateReceived(Update update) {
         return telegramFacade.handleUpdate(update);
+    }
+
+    @Override
+    public String getBotPath() {
+        return botPath;
+    }
+
+    @Override
+    public String getBotUsername() {
+        return botUsername;
+    }
+
+    @Override
+    public String getBotToken() {
+        return botToken;
     }
 
     public void sendMsg(SendMessage sendMessage) throws TelegramApiException {
         execute(sendMessage);
+        log.info(LogMessage.BOT_SEND_MSG_SUCCESS, sendMessage.getText());
     }
+
 }

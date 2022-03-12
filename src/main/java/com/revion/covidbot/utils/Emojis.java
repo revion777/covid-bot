@@ -1,18 +1,16 @@
 package com.revion.covidbot.utils;
 
 import com.vdurmont.emoji.EmojiParser;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
  * @author Maxim Negodyuk created on 24.07.2020
- * @project covid19-statistic-bot
+
  */
-@AllArgsConstructor
+@RequiredArgsConstructor
 public enum Emojis {
 
     INFO(EmojiParser.parseToUnicode(":information_source:")),
-    PLUS(EmojiParser.parseToUnicode(":heavy_plus_sign:")),
-    MINUS(EmojiParser.parseToUnicode(":heavy_minus_sign:")),
     ERROR(EmojiParser.parseToUnicode(":x:")),
     ASK(EmojiParser.parseToUnicode(":question:")),
     BULB(EmojiParser.parseToUnicode(":bulb:")),

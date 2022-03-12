@@ -1,76 +1,59 @@
 package com.revion.covidbot.botapi;
 
-import com.revion.covidbot.cache.UserDataCache;
+import com.revion.covidbot.botapi.cache.UserDataCache;
 import com.revion.covidbot.objects.BotCommand;
 import com.revion.covidbot.objects.BotState;
-import com.revion.covidbot.objects.logging.LogMessage;
-import com.revion.covidbot.services.ReplyMessagesService;
+import com.revion.covidbot.services.message.SendMessageBuilder;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.User;
+
+import java.util.Optional;
+
+import static com.revion.covidbot.objects.logging.LogMessage.BOT_HANDLE_INPUT_MSG_ERROR;
+import static com.revion.covidbot.objects.logging.LogMessage.BOT_NEW_INPUT_MESSAGE;
+import static com.revion.covidbot.objects.logging.LogMessage.BOT_SEND_MSG_SUCCESS;
 
 /**
  * @author Maxim Negodyuk created on 24.07.2020
- * @project covid19-statistic-bot
  */
 @Component
+@RequiredArgsConstructor
 @Slf4j
 public class TelegramFacade {
 
     private final UserDataCache userDataCache;
     private final BotStateContext botStateContext;
-    private final ReplyMessagesService messagesService;
-
-    private User inputUser;
-
-    public TelegramFacade(UserDataCache userDataCache,
-                          BotStateContext botStateContext,
-                          ReplyMessagesService messagesService) {
-        this.userDataCache = userDataCache;
-        this.botStateContext = botStateContext;
-        this.messagesService = messagesService;
-    }
+    private final SendMessageBuilder messagesService;
 
     public SendMessage handleUpdate(Update update) {
         SendMessage replyMessage = null;
-        Message message = update.getMessage();
+        Message inputMsg = update.getMessage();
 
-        if (message != null && message.hasText()) {
-            inputUser = message.getFrom();
-
-            log.info(LogMessage.BOT_NEW_INPUT_MESSAGE, inputUser.getUserName(), message.getChatId(), message.getText());
-            replyMessage = handleInputMessage(message);
-            log.info(LogMessage.BOT_SEND_MSG_SUCCESS, replyMessage.getText());
+        if (inputMsg != null && inputMsg.hasText()) {
+            log.info(BOT_NEW_INPUT_MESSAGE, inputMsg);
+            replyMessage = handleInputMessage(inputMsg);
         }
-
         return replyMessage;
     }
 
-    private SendMessage handleInputMessage(Message message) {
-        String inputMsg = message.getText();
-        long userId = inputUser.getId();
+    private SendMessage handleInputMessage(Message inputMsg) {
+        Long userId = inputMsg.getFrom().getId();
 
-        BotState botState = switch (inputMsg) {
-            case BotCommand.START -> BotState.ADD_USER;
-            case BotCommand.SHOW_REGIONS -> BotState.SHOW_REGIONS;
-            case BotCommand.SHOW_STATISTIC -> BotState.SHOW_STATISTIC;
-            case BotCommand.ADD_REGION -> BotState.ADD_REGION;
-            case BotCommand.DELETE_REGION -> BotState.DELETE_REGION;
-            case BotCommand.HELP -> BotState.HELP;
-            case BotCommand.UNSUBSCRIBE -> BotState.UNSUBSCRIBE;
-            default -> userDataCache.getUserCurrentBotState(userId);
-        };
-
+        BotState botState = Optional.ofNullable(BotCommand.getBotStateByCommand(inputMsg.getText()))
+                .orElseGet(() -> userDataCache.getUserCurrentBotState(userId));
         userDataCache.setUserCurrentBotState(userId, botState);
 
         try {
-            return botStateContext.processInputMessage(botState, message);
-        } catch (Exception ex) {
-            log.error(LogMessage.BOT_HANDLE_INPUT_MSG_ERROR, ex);
-            return messagesService.getErrorReplyMessage(message.getChatId(), "reply.bot.error");
+            log.info(BOT_SEND_MSG_SUCCESS, inputMsg.getText());
+            return botStateContext.processInputMessage(botState, inputMsg);
+        } catch (RuntimeException ex) {
+            log.error(BOT_HANDLE_INPUT_MSG_ERROR, ex);
+            return messagesService.getErrorEmojiMessage(String.valueOf(inputMsg.getChatId()), "reply.bot.error");
         }
     }
+
 }

@@ -7,16 +7,13 @@ import java.util.Locale;
 
 /**
  * @author Maxim Negodyuk created on 24.07.2020
- * @project covid19-statistic-bot
  */
 public class CommonUtils {
-
-    private static DecimalFormat formatter;
 
     public final static DateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm:ss dd.MM.yyyy");
 
     public static Integer stringToNumber(Object value) {
-        return Integer.parseInt(CommonUtils.safetyCleanWhiteSpaces(String.valueOf(value)));
+        return Integer.parseInt(safetyCleanWhiteSpaces(String.valueOf(value)));
     }
 
     public static String safetyCleanWhiteSpaces(String string) {
@@ -25,22 +22,6 @@ public class CommonUtils {
             return res.trim();
         }
         return Strings.EMPTY;
-    }
-
-    public static DecimalFormat getDecimalFormatter() {
-        return createDecimalFormatter();
-    }
-
-    private static DecimalFormat createDecimalFormatter() {
-        if (formatter != null)
-            return formatter;
-
-        formatter = (DecimalFormat) NumberFormat.getInstance(Locale.getDefault());
-        DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
-        symbols.setGroupingSeparator(' ');
-        symbols.setDecimalSeparator('.');
-        formatter.setDecimalFormatSymbols(symbols);
-        return formatter;
     }
 
 }

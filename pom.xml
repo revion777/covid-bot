@@ -5,23 +5,23 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.3.1.RELEASE</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <version>2.6.0</version>
+        <relativePath/>
     </parent>
 
     <groupId>com.revion</groupId>
     <artifactId>covid19-statistic-bot</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
     <packaging>jar</packaging>
     <name>covid19-statistic-bot</name>
     <description>Covid19 Statistic Bot</description>
 
     <properties>
-        <java.version>14</java.version>
-        <telegram.bot.version>4.1.2</telegram.bot.version>
-        <jsoup.version>1.14.2</jsoup.version>
+        <java.version>17</java.version>
+        <telegram.bot.version>5.4.0.1</telegram.bot.version>
+        <jsoup.version>1.14.3</jsoup.version>
         <vdurmont.version>5.1.1</vdurmont.version>
-        <hibernate.validator.version>6.1.5.Final</hibernate.validator.version>
+        <liqubase.version>4.6.1</liqubase.version>
     </properties>
 
     <dependencies>
@@ -68,11 +68,6 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>${hibernate.validator.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
         </dependency>
@@ -80,6 +75,11 @@
             <groupId>com.vdurmont</groupId>
             <artifactId>emoji-java</artifactId>
             <version>${vdurmont.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>${liqubase.version}</version>
         </dependency>
     </dependencies>
 
