@@ -2,7 +2,6 @@ package com.revion.covidbot.objects;
 
 /**
  * @author Maxim Negodyuk created on 24.07.2020
- * @project covid19-statistic-bot
  */
 public enum BotState {
 
