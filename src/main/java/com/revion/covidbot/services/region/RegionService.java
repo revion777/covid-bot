@@ -29,7 +29,7 @@ public class RegionService {
 
         fillNewRegionsWithIds(savedRegionList, newRegionList);
 
-        regionRepository.saveAll(savedRegionList);
+        regionRepository.saveAll(newRegionList);
         log.info(LogMessage.REGIONS_SUCCESSFULLY_SAVED);
     }
 
